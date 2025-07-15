@@ -31,7 +31,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				overflow-x: hidden;
 			}
 
-			/* SUPER GAY DICK CONFETTI */
+			/* EPIC DICK FIREWORKS */
 			.dick-confetti-container {
 				position: fixed;
 				top: 0;
@@ -43,36 +43,56 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				overflow: hidden;
 			}
 
-			.dick-confetti {
+			.dick-firework {
 				position: absolute;
-				font-size: 1.5rem;
-				animation: dickFall 8s linear infinite;
-				opacity: 0.8;
+				width: 10px;
+				height: 10px;
+				border-radius: 50%;
+				animation: dickFireworkLaunch 3s ease-out forwards;
 			}
 
-			.dick-confetti:nth-child(odd) {
-				animation-duration: 6s;
-				color: var(--rainbow-pink);
+			.dick-firework::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				background: currentColor;
+				border-radius: 50%;
+				animation: fireworkGlow 0.5s ease-out infinite;
 			}
 
-			.dick-confetti:nth-child(even) {
-				animation-duration: 7s;
-				color: var(--rainbow-blue);
+			.dick-explosion {
+				position: absolute;
+				animation: dickExplosion 2s ease-out forwards;
 			}
 
-			.dick-confetti:nth-child(3n) {
-				animation-duration: 9s;
-				color: var(--rainbow-green);
+			.dick-particle {
+				position: absolute;
+				font-size: 1.2rem;
+				animation: dickParticleFly 1.5s ease-out forwards;
+				opacity: 0;
 			}
 
-			.dick-confetti:nth-child(4n) {
-				animation-duration: 5s;
-				color: var(--rainbow-yellow);
-			}
+			.dick-particle:nth-child(odd) { color: var(--rainbow-pink); }
+			.dick-particle:nth-child(even) { color: var(--rainbow-blue); }
+			.dick-particle:nth-child(3n) { color: var(--rainbow-green); }
+			.dick-particle:nth-child(4n) { color: var(--rainbow-yellow); }
+			.dick-particle:nth-child(5n) { color: var(--rainbow-purple); }
+			.dick-particle:nth-child(6n) { color: var(--rainbow-orange); }
 
-			.dick-confetti:nth-child(5n) {
-				animation-duration: 10s;
-				color: var(--rainbow-purple);
+			/* FIREWORK TRAIL EFFECT */
+			.dick-firework::after {
+				content: '';
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				width: 2px;
+				height: 20px;
+				background: linear-gradient(to bottom, currentColor, transparent);
+				transform: translate(-50%, -50%);
+				animation: fireworkTrail 0.5s ease-out infinite;
 			}
 
 			/* RAINBOW PARTICLE BACKGROUND */
@@ -448,18 +468,32 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				color: #ccc;
 			}
 
-			/* SUPER GAY ANIMATIONS */
-			@keyframes dickFall {
-				0% { 
-					transform: translateY(-100vh) translateX(0px) rotate(0deg); 
-					opacity: 0; 
-				}
-				10% { opacity: 1; }
-				90% { opacity: 1; }
-				100% { 
-					transform: translateY(100vh) translateX(100px) rotate(360deg); 
-					opacity: 0; 
-				}
+			/* EPIC DICK FIREWORKS ANIMATIONS */
+			@keyframes dickFireworkLaunch {
+				0% { transform: translateY(0) translateX(0) scale(0.1); opacity: 0; }
+				50% { opacity: 1; }
+				100% { transform: translateY(-100vh) translateX(calc(var(--launch-x) * 100%)) scale(1); opacity: 0; }
+			}
+
+			@keyframes fireworkGlow {
+				0% { opacity: 0.8; }
+				100% { opacity: 0; }
+			}
+
+			@keyframes dickExplosion {
+				0% { transform: scale(1); opacity: 1; }
+				100% { transform: scale(1.5); opacity: 0; }
+			}
+
+			@keyframes dickParticleFly {
+				0% { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
+				50% { opacity: 1; }
+				100% { transform: translateY(-100px) translateX(calc(var(--particle-x) * 100%)) scale(1); opacity: 0; }
+			}
+
+			@keyframes fireworkTrail {
+				0% { transform: translate(-50%, -50%) scaleY(0); }
+				100% { transform: translate(-50%, -100%) scaleY(1); }
 			}
 
 			@keyframes neonGlow {
@@ -769,21 +803,106 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		<Footer />
 
 		<script>
-			// SUPER GAY DICK CONFETTI SYSTEM
-			function createDickConfetti() {
+			// EPIC DICK FIREWORKS SYSTEM
+			function createDickFireworks() {
 				const container = document.getElementById('dickConfetti');
 				const dicks = ['🍆', '🥕', '🌽', '🥖', '🍌', '🥒'];
 				
-				for (let i = 0; i < 50; i++) {
-					const dick = document.createElement('div');
-					dick.className = 'dick-confetti';
-					dick.textContent = dicks[Math.floor(Math.random() * dicks.length)];
-					dick.style.left = Math.random() * 100 + '%';
-					dick.style.animationDelay = Math.random() * 8 + 's';
-					dick.style.animationDuration = (5 + Math.random() * 5) + 's';
-					dick.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
-					container.appendChild(dick);
+				// Launch fireworks from sides
+				setInterval(() => {
+					launchDickFirework(container, dicks);
+				}, 2000);
+				
+				// Launch initial fireworks
+				for (let i = 0; i < 5; i++) {
+					setTimeout(() => {
+						launchDickFirework(container, dicks);
+					}, i * 500);
 				}
+			}
+			
+			function launchDickFirework(container, dicks) {
+				// Create firework rocket
+				const firework = document.createElement('div');
+				firework.className = 'dick-firework';
+				
+				// Random launch position from sides
+				const isFromLeft = Math.random() > 0.5;
+				const launchX = isFromLeft ? -0.1 : 1.1;
+				const targetX = Math.random() * 0.8 + 0.1; // Target in middle area
+				const targetY = Math.random() * 0.6 + 0.2; // Target in upper area
+				
+				firework.style.left = (launchX * 100) + '%';
+				firework.style.bottom = '0%';
+				firework.style.setProperty('--launch-x', (targetX - launchX).toString());
+				firework.style.color = getRandomRainbowColor();
+				
+				container.appendChild(firework);
+				
+				// Explode after launch animation
+				setTimeout(() => {
+					explodeDickFirework(container, dicks, targetX * window.innerWidth, (1 - targetY) * window.innerHeight);
+					firework.remove();
+				}, 3000);
+			}
+			
+			function explodeDickFirework(container, dicks, x, y) {
+				// Create explosion effect
+				const explosion = document.createElement('div');
+				explosion.className = 'dick-explosion';
+				explosion.style.left = x + 'px';
+				explosion.style.top = y + 'px';
+				explosion.style.width = '100px';
+				explosion.style.height = '100px';
+				explosion.style.background = 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%)';
+				explosion.style.borderRadius = '50%';
+				
+				container.appendChild(explosion);
+				
+				// Create dick particles
+				const particleCount = 15 + Math.floor(Math.random() * 10);
+				for (let i = 0; i < particleCount; i++) {
+					const particle = document.createElement('div');
+					particle.className = 'dick-particle';
+					particle.textContent = dicks[Math.floor(Math.random() * dicks.length)];
+					particle.style.left = x + 'px';
+					particle.style.top = y + 'px';
+					
+					// Random direction for each particle
+					const angle = (i / particleCount) * 2 * Math.PI;
+					const distance = 100 + Math.random() * 150;
+					const particleX = Math.cos(angle) * distance;
+					const particleY = Math.sin(angle) * distance;
+					
+					particle.style.setProperty('--particle-x', (particleX / window.innerWidth).toString());
+					particle.style.setProperty('--particle-y', (particleY / window.innerHeight).toString());
+					particle.style.animationDelay = (Math.random() * 0.5) + 's';
+					
+					container.appendChild(particle);
+					
+					// Remove particle after animation
+					setTimeout(() => {
+						particle.remove();
+					}, 2000);
+				}
+				
+				// Remove explosion after animation
+				setTimeout(() => {
+					explosion.remove();
+				}, 2000);
+			}
+			
+			function getRandomRainbowColor() {
+				const colors = [
+					'var(--rainbow-red)',
+					'var(--rainbow-orange)',
+					'var(--rainbow-yellow)',
+					'var(--rainbow-green)',
+					'var(--rainbow-blue)',
+					'var(--rainbow-purple)',
+					'var(--rainbow-pink)'
+				];
+				return colors[Math.floor(Math.random() * colors.length)];
 			}
 
 			// RAINBOW PARTICLE SYSTEM
@@ -801,7 +920,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 			// Initialize effects when page loads
 			document.addEventListener('DOMContentLoaded', function() {
-				createDickConfetti();
+				createDickFireworks();
 				createParticles();
 				
 				// Add interactive effects
