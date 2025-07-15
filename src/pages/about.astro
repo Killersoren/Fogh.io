@@ -2,24 +2,25 @@
 import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title="About - BALD SOFTWARE GUY" description="Learn more about the most epic bald software developer" />
+		<BaseHead title="About - BALD SOFTWARE GUY" description="Learn more about the most fabulous bald software developer" />
 		<style>
 			@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap');
 			
 			:root {
-				--neon-blue: #00ffff;
-				--neon-pink: #ff00ff;
-				--neon-green: #00ff00;
+				--rainbow-red: #ff0000;
+				--rainbow-orange: #ff8000;
+				--rainbow-yellow: #ffff00;
+				--rainbow-green: #00ff00;
+				--rainbow-blue: #0080ff;
+				--rainbow-purple: #8000ff;
+				--rainbow-pink: #ff0080;
 				--dark-bg: #0a0a0a;
-				--matrix-green: #00ff41;
-				--cyber-purple: #8a2be2;
-				--gold: #ffd700;
-				--orange: #ff6600;
 			}
 
 			body {
@@ -30,7 +31,51 @@ import Footer from '../components/Footer.astro';
 				overflow-x: hidden;
 			}
 
-			/* INTENSE PARTICLE BACKGROUND */
+			/* SUPER GAY DICK CONFETTI */
+			.dick-confetti-container {
+				position: fixed;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				pointer-events: none;
+				z-index: 100;
+				overflow: hidden;
+			}
+
+			.dick-confetti {
+				position: absolute;
+				font-size: 1.5rem;
+				animation: dickFall 8s linear infinite;
+				opacity: 0.8;
+			}
+
+			.dick-confetti:nth-child(odd) {
+				animation-duration: 6s;
+				color: var(--rainbow-pink);
+			}
+
+			.dick-confetti:nth-child(even) {
+				animation-duration: 7s;
+				color: var(--rainbow-blue);
+			}
+
+			.dick-confetti:nth-child(3n) {
+				animation-duration: 9s;
+				color: var(--rainbow-green);
+			}
+
+			.dick-confetti:nth-child(4n) {
+				animation-duration: 5s;
+				color: var(--rainbow-yellow);
+			}
+
+			.dick-confetti:nth-child(5n) {
+				animation-duration: 10s;
+				color: var(--rainbow-purple);
+			}
+
+			/* RAINBOW PARTICLE BACKGROUND */
 			.particle-container {
 				position: fixed;
 				top: 0;
@@ -43,151 +88,214 @@ import Footer from '../components/Footer.astro';
 
 			.particle {
 				position: absolute;
-				width: 3px;
-				height: 3px;
-				background: var(--neon-blue);
+				width: 4px;
+				height: 4px;
 				border-radius: 50%;
-				animation: particleFloat 10s linear infinite;
+				animation: particleFloat 8s linear infinite;
 			}
 
-			.particle:nth-child(even) {
-				background: var(--neon-pink);
-				animation-duration: 8s;
-			}
+			.particle:nth-child(6n+1) { background: var(--rainbow-red); animation-duration: 6s; }
+			.particle:nth-child(6n+2) { background: var(--rainbow-orange); animation-duration: 7s; }
+			.particle:nth-child(6n+3) { background: var(--rainbow-yellow); animation-duration: 8s; }
+			.particle:nth-child(6n+4) { background: var(--rainbow-green); animation-duration: 9s; }
+			.particle:nth-child(6n+5) { background: var(--rainbow-blue); animation-duration: 10s; }
+			.particle:nth-child(6n+6) { background: var(--rainbow-purple); animation-duration: 11s; }
 
-			.particle:nth-child(3n) {
-				background: var(--neon-green);
-				animation-duration: 12s;
-			}
-
-			.particle:nth-child(4n) {
-				background: var(--gold);
-				animation-duration: 9s;
-			}
-
-			/* HOLOGRAPHIC GRID */
-			.holographic-grid {
+			/* RAINBOW SCANNING LINES */
+			.scan-line {
 				position: fixed;
 				top: 0;
 				left: 0;
 				width: 100%;
-				height: 100%;
-				background-image: 
-					linear-gradient(rgba(0, 255, 255, 0.1) 1px, transparent 1px),
-					linear-gradient(90deg, rgba(0, 255, 255, 0.1) 1px, transparent 1px);
-				background-size: 50px 50px;
+				height: 2px;
 				z-index: 2;
-				pointer-events: none;
-				animation: gridMove 20s linear infinite;
+				animation: scanLine 3s linear infinite;
 			}
 
-			.about-hero {
-				min-height: 60vh;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				background: linear-gradient(135deg, #0a0a0a, #1a1a1a, #0a0a0a);
+			.scan-line:nth-child(1) {
+				background: linear-gradient(90deg, transparent, var(--rainbow-red), transparent);
+			}
+
+			.scan-line:nth-child(2) {
+				animation-delay: 1s;
+				background: linear-gradient(90deg, transparent, var(--rainbow-orange), transparent);
+			}
+
+			.scan-line:nth-child(3) {
+				animation-delay: 2s;
+				background: linear-gradient(90deg, transparent, var(--rainbow-yellow), transparent);
+			}
+
+			.scan-line:nth-child(4) {
+				animation-delay: 3s;
+				background: linear-gradient(90deg, transparent, var(--rainbow-green), transparent);
+			}
+
+			.scan-line:nth-child(5) {
+				animation-delay: 4s;
+				background: linear-gradient(90deg, transparent, var(--rainbow-blue), transparent);
+			}
+
+			.scan-line:nth-child(6) {
+				animation-delay: 5s;
+				background: linear-gradient(90deg, transparent, var(--rainbow-purple), transparent);
+			}
+
+			.about-section {
+				min-height: 100vh;
+				padding: 8rem 2rem 4rem;
 				position: relative;
+				background: linear-gradient(45deg, #000000, #1a1a1a, #000000);
 				overflow: hidden;
 				z-index: 10;
 			}
 
-			.about-hero::before {
-				content: '';
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%2300ffff" stroke-width="0.5" opacity="0.3"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
-				animation: gridMove 20s linear infinite;
-			}
-
-			.about-hero::after {
-				content: '';
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				border: 4px solid transparent;
-				background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink), var(--neon-green), var(--gold)) border-box;
-				-webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-				-webkit-mask-composite: destination-out;
-				mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0);
-				mask-composite: exclude;
-				animation: borderRotate 6s linear infinite;
-			}
-
-			.hero-content {
-				text-align: center;
-				z-index: 20;
-				position: relative;
-			}
-
-			.hero-title {
-				font-family: 'Orbitron', monospace;
-				font-size: 4rem;
-				font-weight: 900;
-				background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink), var(--neon-green), var(--gold), var(--orange));
-				background-size: 300% 300%;
-				-webkit-background-clip: text;
-				-webkit-text-fill-color: transparent;
-				background-clip: text;
-				animation: neonGlow 2s ease-in-out infinite, titleFloat 5s ease-in-out infinite;
-				text-shadow: 
-					0 0 20px var(--neon-blue),
-					0 0 40px var(--neon-blue),
-					0 0 60px var(--neon-blue);
-				margin-bottom: 1rem;
-				position: relative;
-			}
-
-			.hero-title::before {
-				content: 'ABOUT THE BALD LEGEND';
+			/* RAINBOW HOLOGRAPHIC GRID */
+			.holographic-grid {
 				position: absolute;
 				top: 0;
 				left: 0;
 				width: 100%;
 				height: 100%;
-				background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue), var(--neon-green));
+				opacity: 0.2;
+				z-index: 1;
+				background-image: 
+					linear-gradient(rgba(255, 0, 255, 0.1) 1px, transparent 1px),
+					linear-gradient(90deg, rgba(255, 0, 255, 0.1) 1px, transparent 1px);
+				background-size: 50px 50px;
+				animation: gridPulse 4s ease-in-out infinite;
+			}
+
+			.about-content {
+				max-width: 1200px;
+				margin: 0 auto;
+				position: relative;
+				z-index: 20;
+			}
+
+			.about-title {
+				text-align: center;
+				font-family: 'Orbitron', monospace;
+				font-size: 4rem;
+				font-weight: 900;
+				margin-bottom: 3rem;
+				background: linear-gradient(45deg, var(--rainbow-red), var(--rainbow-orange), var(--rainbow-yellow), var(--rainbow-green), var(--rainbow-blue), var(--rainbow-purple));
 				background-size: 300% 300%;
 				-webkit-background-clip: text;
 				-webkit-text-fill-color: transparent;
 				background-clip: text;
-				animation: neonGlow 2s ease-in-out infinite reverse;
-				filter: blur(4px);
-				z-index: -1;
+				animation: neonGlow 2s ease-in-out infinite, titleFloat 4s ease-in-out infinite;
+				text-shadow: 
+					0 0 20px var(--rainbow-pink),
+					0 0 40px var(--rainbow-pink),
+					0 0 60px var(--rainbow-pink);
 			}
 
-			.hero-subtitle {
+			.about-subtitle {
+				text-align: center;
 				font-size: 1.5rem;
-				color: var(--matrix-green);
-				animation: pulse 2s ease-in-out infinite, glowText 4s ease-in-out infinite;
-				text-shadow: 0 0 20px var(--matrix-green);
-			}
-
-			main {
-				max-width: 1200px;
-				margin: 0 auto;
-				padding: 4rem 2rem;
-				position: relative;
-				z-index: 10;
-			}
-
-			.section {
+				color: var(--rainbow-yellow);
 				margin-bottom: 4rem;
-				background: rgba(0, 255, 255, 0.05);
-				border: 2px solid rgba(0, 255, 255, 0.3);
+				animation: subtitlePulse 2s ease-in-out infinite;
+				text-shadow: 0 0 15px var(--rainbow-yellow);
+			}
+
+			.about-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+				gap: 3rem;
+				margin-bottom: 4rem;
+			}
+
+			.about-card {
+				background: rgba(255, 0, 255, 0.1);
+				padding: 2.5rem;
 				border-radius: 20px;
-				padding: 3rem;
+				border: 3px solid var(--rainbow-pink);
 				position: relative;
 				overflow: hidden;
-				backdrop-filter: blur(10px);
-				animation: sectionGlow 4s ease-in-out infinite;
+				animation: cardFloat 5s ease-in-out infinite;
+				transition: all 0.3s ease;
+				text-align: center;
 			}
 
-			.section::before {
+			.about-card::before {
+				content: '';
+				position: absolute;
+				top: 0;
+				left: -100%;
+				width: 100%;
+				height: 100%;
+				background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+				transition: left 0.5s ease;
+			}
+
+			.about-card:hover {
+				transform: scale(1.05) rotate(2deg);
+				box-shadow: 
+					0 0 30px var(--rainbow-pink),
+					0 0 60px var(--rainbow-blue);
+				border-color: var(--rainbow-blue);
+			}
+
+			.about-card:hover::before {
+				left: 100%;
+			}
+
+			.card-icon {
+				font-size: 4rem;
+				margin-bottom: 1.5rem;
+				animation: iconRotate 10s linear infinite;
+				filter: drop-shadow(0 0 15px var(--rainbow-pink));
+			}
+
+			.card-title {
+				font-family: 'Orbitron', monospace;
+				font-size: 1.8rem;
+				color: var(--rainbow-pink);
+				margin-bottom: 1rem;
+				text-shadow: 0 0 10px var(--rainbow-pink);
+			}
+
+			.card-description {
+				font-size: 1.1rem;
+				line-height: 1.6;
+				color: white;
+			}
+
+			.skills-section {
+				margin: 4rem 0;
+			}
+
+			.skills-title {
+				text-align: center;
+				font-family: 'Orbitron', monospace;
+				font-size: 2.5rem;
+				color: var(--rainbow-blue);
+				margin-bottom: 3rem;
+				text-shadow: 0 0 15px var(--rainbow-blue);
+				animation: titleGlow 3s ease-in-out infinite;
+			}
+
+			.skills-grid {
+				display: grid;
+				grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+				gap: 2rem;
+			}
+
+			.skill-card {
+				background: rgba(0, 255, 255, 0.1);
+				padding: 2rem;
+				border-radius: 15px;
+				border: 2px solid var(--rainbow-blue);
+				text-align: center;
+				animation: skillFloat 4s ease-in-out infinite;
+				transition: all 0.3s ease;
+				position: relative;
+				overflow: hidden;
+			}
+
+			.skill-card::before {
 				content: '';
 				position: absolute;
 				top: 0;
@@ -195,117 +303,63 @@ import Footer from '../components/Footer.astro';
 				width: 100%;
 				height: 100%;
 				background: linear-gradient(90deg, transparent, rgba(0, 255, 255, 0.2), transparent);
-				transition: left 0.8s ease;
-			}
-
-			.section:hover::before {
-				left: 100%;
-			}
-
-			.section::after {
-				content: '';
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				border-radius: 20px;
-				background: linear-gradient(45deg, transparent, rgba(0, 255, 255, 0.1), transparent);
-				animation: sectionBorder 3s ease-in-out infinite;
-			}
-
-			.section h2 {
-				font-family: 'Orbitron', monospace;
-				font-size: 3rem;
-				color: var(--neon-blue);
-				margin-bottom: 2rem;
-				text-shadow: 0 0 15px var(--neon-blue);
-				animation: titleGlow 3s ease-in-out infinite;
-			}
-
-			.section p {
-				font-size: 1.2rem;
-				line-height: 1.8;
-				margin-bottom: 1.5rem;
-				color: #e0e0e0;
-				position: relative;
-				z-index: 2;
-			}
-
-			.skills-grid {
-				display: grid;
-				grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-				gap: 2.5rem;
-				margin-top: 3rem;
-			}
-
-			.skill-card {
-				background: rgba(255, 0, 255, 0.1);
-				border: 3px solid var(--neon-pink);
-				border-radius: 15px;
-				padding: 2rem;
-				text-align: center;
-				transition: all 0.4s ease;
-				position: relative;
-				overflow: hidden;
-				backdrop-filter: blur(5px);
-				animation: cardFloat 6s ease-in-out infinite;
-			}
-
-			.skill-card::before {
-				content: '';
-				position: absolute;
-				top: 0;
-				left: 0;
-				right: 0;
-				bottom: 0;
-				background: linear-gradient(45deg, transparent, rgba(255, 0, 255, 0.2), transparent);
-				transform: translateX(-100%);
-				transition: transform 0.5s ease;
-			}
-
-			.skill-card::after {
-				content: '';
-				position: absolute;
-				top: -2px;
-				left: -2px;
-				right: -2px;
-				bottom: -2px;
-				border-radius: 15px;
-				background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue), var(--neon-green));
-				background-size: 200% 200%;
-				animation: borderGlow 3s ease-in-out infinite;
-				z-index: -1;
+				transition: left 0.5s ease;
 			}
 
 			.skill-card:hover {
-				transform: translateY(-10px) scale(1.05) rotate(2deg);
+				transform: scale(1.1) rotate(5deg);
 				box-shadow: 
-					0 20px 40px rgba(255, 0, 255, 0.4),
-					0 0 60px rgba(255, 0, 255, 0.3);
+					0 0 25px var(--rainbow-blue),
+					0 0 50px var(--rainbow-green);
+				border-color: var(--rainbow-green);
 			}
 
 			.skill-card:hover::before {
-				transform: translateX(100%);
+				left: 100%;
 			}
 
-			.skill-card h3 {
-				color: var(--neon-pink);
+			.skill-name {
 				font-family: 'Orbitron', monospace;
-				margin-bottom: 1.5rem;
-				font-size: 1.5rem;
-				text-shadow: 0 0 10px var(--neon-pink);
+				font-size: 1.3rem;
+				color: var(--rainbow-blue);
+				margin-bottom: 1rem;
+				text-shadow: 0 0 10px var(--rainbow-blue);
 			}
 
-			.skill-card p {
-				color: #ccc;
-				font-size: 1rem;
-				line-height: 1.6;
+			.skill-level {
+				width: 100%;
+				height: 8px;
+				background: rgba(255, 255, 255, 0.1);
+				border-radius: 4px;
+				overflow: hidden;
+				position: relative;
+			}
+
+			.skill-progress {
+				height: 100%;
+				background: linear-gradient(90deg, var(--rainbow-blue), var(--rainbow-green));
+				border-radius: 4px;
+				animation: progressGlow 2s ease-in-out infinite;
+			}
+
+			.timeline-section {
+				margin: 4rem 0;
+			}
+
+			.timeline-title {
+				text-align: center;
+				font-family: 'Orbitron', monospace;
+				font-size: 2.5rem;
+				color: var(--rainbow-green);
+				margin-bottom: 3rem;
+				text-shadow: 0 0 15px var(--rainbow-green);
+				animation: titleGlow 3s ease-in-out infinite;
 			}
 
 			.timeline {
 				position: relative;
-				margin-top: 4rem;
+				max-width: 800px;
+				margin: 0 auto;
 			}
 
 			.timeline::before {
@@ -315,78 +369,99 @@ import Footer from '../components/Footer.astro';
 				top: 0;
 				bottom: 0;
 				width: 4px;
-				background: linear-gradient(to bottom, var(--neon-blue), var(--neon-pink), var(--neon-green), var(--gold));
+				background: linear-gradient(to bottom, var(--rainbow-green), var(--rainbow-blue), var(--rainbow-purple));
 				transform: translateX(-50%);
-				animation: timelineGlow 4s ease-in-out infinite;
+				animation: timelineGlow 3s ease-in-out infinite;
 			}
 
 			.timeline-item {
 				position: relative;
-				margin-bottom: 4rem;
+				margin: 3rem 0;
 				width: 45%;
-				animation: timelineFloat 8s ease-in-out infinite;
+				animation: timelineFloat 6s ease-in-out infinite;
 			}
 
 			.timeline-item:nth-child(odd) {
 				left: 0;
+				text-align: right;
 			}
 
 			.timeline-item:nth-child(even) {
 				left: 55%;
+				text-align: left;
 			}
 
 			.timeline-content {
 				background: rgba(0, 255, 0, 0.1);
-				border: 3px solid var(--neon-green);
-				border-radius: 15px;
 				padding: 2rem;
+				border-radius: 15px;
+				border: 2px solid var(--rainbow-green);
 				position: relative;
-				backdrop-filter: blur(5px);
-				animation: contentGlow 5s ease-in-out infinite;
+				transition: all 0.3s ease;
 			}
 
 			.timeline-content::before {
 				content: '';
 				position: absolute;
 				top: 50%;
-				width: 25px;
-				height: 25px;
-				background: var(--neon-green);
+				width: 20px;
+				height: 20px;
+				background: var(--rainbow-green);
 				border-radius: 50%;
 				transform: translateY(-50%);
-				animation: timelineDot 3s ease-in-out infinite;
-				box-shadow: 0 0 20px var(--neon-green);
+				box-shadow: 0 0 15px var(--rainbow-green);
+				animation: timelineDot 2s ease-in-out infinite;
 			}
 
 			.timeline-item:nth-child(odd) .timeline-content::before {
-				right: -62px;
+				right: -60px;
 			}
 
 			.timeline-item:nth-child(even) .timeline-content::before {
-				left: -62px;
+				left: -60px;
 			}
 
-			.timeline-content h3 {
-				color: var(--neon-green);
+			.timeline-content:hover {
+				transform: scale(1.05);
+				box-shadow: 
+					0 0 25px var(--rainbow-green),
+					0 0 50px var(--rainbow-blue);
+				border-color: var(--rainbow-blue);
+			}
+
+			.timeline-year {
 				font-family: 'Orbitron', monospace;
-				margin-bottom: 0.8rem;
-				font-size: 1.4rem;
-				text-shadow: 0 0 10px var(--neon-green);
+				font-size: 1.2rem;
+				color: var(--rainbow-green);
+				margin-bottom: 0.5rem;
+				text-shadow: 0 0 10px var(--rainbow-green);
 			}
 
-			.timeline-content .date {
-				color: #888;
+			.timeline-title {
+				font-size: 1.3rem;
+				color: white;
+				margin-bottom: 0.5rem;
+			}
+
+			.timeline-description {
 				font-size: 1rem;
-				margin-bottom: 1.2rem;
-				font-weight: bold;
+				color: #ccc;
 			}
 
-			.timeline-content p {
-				color: #e0e0e0;
-				line-height: 1.6;
+			/* SUPER GAY ANIMATIONS */
+			@keyframes dickFall {
+				0% { 
+					transform: translateY(-100vh) translateX(0px) rotate(0deg); 
+					opacity: 0; 
+				}
+				10% { opacity: 1; }
+				90% { opacity: 1; }
+				100% { 
+					transform: translateY(100vh) translateX(100px) rotate(360deg); 
+					opacity: 0; 
+				}
 			}
 
-			/* INTENSE ANIMATIONS */
 			@keyframes neonGlow {
 				0%, 100% { background-position: 0% 50%; }
 				50% { background-position: 100% 50%; }
@@ -397,72 +472,9 @@ import Footer from '../components/Footer.astro';
 				50% { transform: translateY(-10px) rotate(1deg); }
 			}
 
-			@keyframes pulse {
+			@keyframes subtitlePulse {
 				0%, 100% { opacity: 1; transform: scale(1); }
 				50% { opacity: 0.8; transform: scale(1.02); }
-			}
-
-			@keyframes glowText {
-				0%, 100% { text-shadow: 0 0 20px var(--matrix-green); }
-				50% { text-shadow: 0 0 40px var(--matrix-green), 0 0 60px var(--matrix-green); }
-			}
-
-			@keyframes gridMove {
-				0% { transform: translate(0, 0); }
-				100% { transform: translate(20px, 20px); }
-			}
-
-			@keyframes borderRotate {
-				0% { background: linear-gradient(0deg, var(--neon-blue), var(--neon-pink), var(--neon-green), var(--gold)); }
-				25% { background: linear-gradient(90deg, var(--neon-pink), var(--neon-green), var(--gold), var(--neon-blue)); }
-				50% { background: linear-gradient(180deg, var(--neon-green), var(--gold), var(--neon-blue), var(--neon-pink)); }
-				75% { background: linear-gradient(270deg, var(--gold), var(--neon-blue), var(--neon-pink), var(--neon-green)); }
-				100% { background: linear-gradient(360deg, var(--neon-blue), var(--neon-pink), var(--neon-green), var(--gold)); }
-			}
-
-			@keyframes sectionGlow {
-				0%, 100% { box-shadow: 0 0 20px rgba(0, 255, 255, 0.3); }
-				50% { box-shadow: 0 0 40px rgba(0, 255, 255, 0.5), 0 0 60px rgba(0, 255, 255, 0.3); }
-			}
-
-			@keyframes sectionBorder {
-				0%, 100% { opacity: 0.3; }
-				50% { opacity: 0.8; }
-			}
-
-			@keyframes titleGlow {
-				0%, 100% { text-shadow: 0 0 15px var(--neon-blue); }
-				50% { text-shadow: 0 0 30px var(--neon-blue), 0 0 45px var(--neon-blue); }
-			}
-
-			@keyframes cardFloat {
-				0%, 100% { transform: translateY(0px) rotate(0deg); }
-				50% { transform: translateY(-5px) rotate(1deg); }
-			}
-
-			@keyframes borderGlow {
-				0%, 100% { background-position: 0% 50%; }
-				50% { background-position: 100% 50%; }
-			}
-
-			@keyframes timelineGlow {
-				0%, 100% { box-shadow: 0 0 10px var(--neon-blue); }
-				50% { box-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-pink); }
-			}
-
-			@keyframes timelineFloat {
-				0%, 100% { transform: translateY(0px); }
-				50% { transform: translateY(-3px); }
-			}
-
-			@keyframes contentGlow {
-				0%, 100% { box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); }
-				50% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.5), 0 0 45px rgba(0, 255, 0, 0.3); }
-			}
-
-			@keyframes timelineDot {
-				0%, 100% { transform: translateY(-50%) scale(1); }
-				50% { transform: translateY(-50%) scale(1.2); }
 			}
 
 			@keyframes particleFloat {
@@ -472,178 +484,344 @@ import Footer from '../components/Footer.astro';
 				100% { transform: translateY(-100px) translateX(100px); opacity: 0; }
 			}
 
+			@keyframes scanLine {
+				0% { transform: translateY(-100vh); }
+				100% { transform: translateY(100vh); }
+			}
+
+			@keyframes gridPulse {
+				0%, 100% { opacity: 0.2; }
+				50% { opacity: 0.4; }
+			}
+
+			@keyframes cardFloat {
+				0%, 100% { transform: translateY(0px) rotate(0deg); }
+				50% { transform: translateY(-10px) rotate(1deg); }
+			}
+
+			@keyframes iconRotate {
+				from { transform: rotate(0deg); }
+				to { transform: rotate(360deg); }
+			}
+
+			@keyframes titleGlow {
+				0%, 100% { text-shadow: 0 0 15px currentColor; }
+				50% { text-shadow: 0 0 25px currentColor, 0 0 35px currentColor; }
+			}
+
+			@keyframes skillFloat {
+				0%, 100% { transform: translateY(0px) rotate(0deg); }
+				50% { transform: translateY(-8px) rotate(2deg); }
+			}
+
+			@keyframes progressGlow {
+				0%, 100% { box-shadow: 0 0 10px var(--rainbow-blue); }
+				50% { box-shadow: 0 0 20px var(--rainbow-blue), 0 0 30px var(--rainbow-green); }
+			}
+
+			@keyframes timelineGlow {
+				0%, 100% { box-shadow: 0 0 10px var(--rainbow-green); }
+				50% { box-shadow: 0 0 20px var(--rainbow-green), 0 0 30px var(--rainbow-blue); }
+			}
+
+			@keyframes timelineFloat {
+				0%, 100% { transform: translateY(0px); }
+				50% { transform: translateY(-5px); }
+			}
+
+			@keyframes timelineDot {
+				0%, 100% { transform: translateY(-50%) scale(1); }
+				50% { transform: translateY(-50%) scale(1.2); }
+			}
+
 			@media (max-width: 768px) {
-				.hero-title {
+				.about-title {
 					font-size: 2.5rem;
 				}
-				
-				.hero-subtitle {
+
+				.about-subtitle {
 					font-size: 1.2rem;
 				}
-				
-				.section h2 {
-					font-size: 2.2rem;
+
+				.about-grid {
+					grid-template-columns: 1fr;
+					gap: 2rem;
 				}
-				
+
+				.about-card {
+					padding: 2rem;
+				}
+
+				.card-icon {
+					font-size: 3rem;
+				}
+
+				.skills-grid {
+					grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+					gap: 1.5rem;
+				}
+
 				.timeline::before {
 					left: 20px;
 				}
-				
+
 				.timeline-item {
 					width: 100%;
 					left: 0 !important;
-					margin-left: 50px;
+					text-align: left !important;
+					padding-left: 60px;
 				}
-				
-				.timeline-content::before {
-					left: -50px !important;
+
+				.timeline-item .timeline-content::before {
+					left: -40px !important;
 				}
 			}
 		</style>
 	</head>
 	<body>
-		<Header />
+		<Header title="About" />
 		
-		<!-- INTENSE PARTICLE BACKGROUND -->
+		<!-- SUPER GAY DICK CONFETTI -->
+		<div class="dick-confetti-container" id="dickConfetti"></div>
+		
+		<!-- RAINBOW PARTICLE BACKGROUND -->
 		<div class="particle-container" id="particles"></div>
 		
-		<!-- HOLOGRAPHIC GRID -->
-		<div class="holographic-grid"></div>
+		<!-- RAINBOW SCANNING LINES -->
+		<div class="scan-line"></div>
+		<div class="scan-line"></div>
+		<div class="scan-line"></div>
+		<div class="scan-line"></div>
+		<div class="scan-line"></div>
+		<div class="scan-line"></div>
 		
-		<section class="about-hero">
-			<div class="hero-content">
-				<h1 class="hero-title">ABOUT THE BALD LEGEND</h1>
-				<p class="hero-subtitle">Discover the story behind the most epic bald software developer</p>
+		<section class="about-section">
+			<div class="holographic-grid"></div>
+			
+			<div class="about-content">
+				<h1 class="about-title">ABOUT THE BALD LEGEND</h1>
+				<p class="about-subtitle">Discover the fabulous journey of the most epic bald software developer! 🌈✨</p>
+				
+				<div class="about-grid">
+					<div class="about-card">
+						<div class="card-icon">👨‍🦲</div>
+						<h3 class="card-title">The Bald Identity</h3>
+						<p class="card-description">
+							I'm not just bald by choice - I'm bald by destiny! My smooth head reflects the clean, efficient code I write. 
+							No hair to get in the way of my programming prowess! 💪
+						</p>
+					</div>
+					
+					<div class="about-card">
+						<div class="card-icon">🌈</div>
+						<h3 class="card-title">Pride & Code</h3>
+						<p class="card-description">
+							Proud to be a gay software developer! I bring color, creativity, and fabulousness to every project. 
+							Love is love, and code is beautiful! 🏳️‍🌈
+						</p>
+					</div>
+					
+					<div class="about-card">
+						<div class="card-icon">🚀</div>
+						<h3 class="card-title">Tech Enthusiast</h3>
+						<p class="card-description">
+							From frontend to backend, I make it all work seamlessly. Always exploring new technologies 
+							and pushing the boundaries of what's possible! ⚡
+						</p>
+					</div>
+					
+					<div class="about-card">
+						<div class="card-icon">🎯</div>
+						<h3 class="card-title">Problem Solver</h3>
+						<p class="card-description">
+							Debugging is my superpower! I find bugs faster than you can say "it works on my machine." 
+							No problem is too complex for this bald brain! 🧠
+						</p>
+					</div>
+					
+					<div class="about-card">
+						<div class="card-icon">💡</div>
+						<h3 class="card-title">Innovation Enthusiast</h3>
+						<p class="card-description">
+							Always thinking outside the box and coming up with creative solutions. 
+							Innovation is my middle name (well, not really, but it should be)! ✨
+						</p>
+					</div>
+					
+					<div class="about-card">
+						<div class="card-icon">🍆</div>
+						<h3 class="card-title">Dick Confetti Master</h3>
+						<p class="card-description">
+							Creator of the most epic dick confetti system ever! Because why not make websites 
+							more fabulous with tiny animated dicks? It's art! 🎨
+						</p>
+					</div>
+				</div>
+				
+				<div class="skills-section">
+					<h2 class="skills-title">MY FABULOUS SKILLS</h2>
+					<div class="skills-grid">
+						<div class="skill-card">
+							<div class="skill-name">JavaScript</div>
+							<div class="skill-level">
+								<div class="skill-progress" style="width: 95%;"></div>
+							</div>
+						</div>
+						
+						<div class="skill-card">
+							<div class="skill-name">TypeScript</div>
+							<div class="skill-level">
+								<div class="skill-progress" style="width: 90%;"></div>
+							</div>
+						</div>
+						
+						<div class="skill-card">
+							<div class="skill-name">React</div>
+							<div class="skill-level">
+								<div class="skill-progress" style="width: 88%;"></div>
+							</div>
+						</div>
+						
+						<div class="skill-card">
+							<div class="skill-name">Node.js</div>
+							<div class="skill-level">
+								<div class="skill-progress" style="width: 85%;"></div>
+							</div>
+						</div>
+						
+						<div class="skill-card">
+							<div class="skill-name">Python</div>
+							<div class="skill-level">
+								<div class="skill-progress" style="width: 80%;"></div>
+							</div>
+						</div>
+						
+						<div class="skill-card">
+							<div class="skill-name">AWS</div>
+							<div class="skill-level">
+								<div class="skill-progress" style="width: 75%;"></div>
+							</div>
+						</div>
+						
+						<div class="skill-card">
+							<div class="skill-name">CSS/SCSS</div>
+							<div class="skill-level">
+								<div class="skill-progress" style="width: 92%;"></div>
+							</div>
+						</div>
+						
+						<div class="skill-card">
+							<div class="skill-name">Git</div>
+							<div class="skill-level">
+								<div class="skill-progress" style="width: 87%;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="timeline-section">
+					<h2 class="timeline-title">MY EPIC JOURNEY</h2>
+					<div class="timeline">
+						<div class="timeline-item">
+							<div class="timeline-content">
+								<div class="timeline-year">2020</div>
+								<h3 class="timeline-title">The Bald Awakening</h3>
+								<p class="timeline-description">Discovered my true calling as a bald software developer. The head shaving ceremony was epic!</p>
+							</div>
+						</div>
+						
+						<div class="timeline-item">
+							<div class="timeline-content">
+								<div class="timeline-year">2021</div>
+								<h3 class="timeline-title">Rainbow Code Revolution</h3>
+								<p class="timeline-description">Started making everything SUPER GAY! Rainbow colors everywhere, because why not?</p>
+							</div>
+						</div>
+						
+						<div class="timeline-item">
+							<div class="timeline-content">
+								<div class="timeline-year">2022</div>
+								<h3 class="timeline-title">Dick Confetti Innovation</h3>
+								<p class="timeline-description">Invented the most fabulous dick confetti system ever! A true breakthrough in web animation.</p>
+							</div>
+						</div>
+						
+						<div class="timeline-item">
+							<div class="timeline-content">
+								<div class="timeline-year">2023</div>
+								<h3 class="timeline-title">Fabulous Code Mastery</h3>
+								<p class="timeline-description">Achieved legendary status in the coding community. Bald + Gay + Code = Perfection!</p>
+							</div>
+						</div>
+						
+						<div class="timeline-item">
+							<div class="timeline-content">
+								<div class="timeline-year">2024</div>
+								<h3 class="timeline-title">The Ultimate Website</h3>
+								<p class="timeline-description">Created this masterpiece - the most epic, fabulous, and SUPER GAY website ever!</p>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
 		</section>
-
-		<main>
-			<section class="section">
-				<h2>🚀 WHO AM I?</h2>
-				<p>
-					I'm not just another developer - I'm THE Bald Software Guy. Born with a passion for code and a head that's smoother than my deployment pipeline, I've been crafting digital experiences that are as clean as my scalp.
-				</p>
-				<p>
-					When I'm not debugging the universe or writing code that makes other developers weep tears of joy, you'll find me exploring the latest technologies, contributing to open source projects, and occasionally explaining to people that yes, I do have a personality despite my lack of hair.
-				</p>
-			</section>
-
-			<section class="section">
-				<h2>⚡ MY SUPERPOWERS</h2>
-				<div class="skills-grid">
-					<div class="skill-card">
-						<h3>🔧 Full-Stack Mastery</h3>
-						<p>From frontend to backend, I make it all work seamlessly. React, Node.js, Python - you name it, I've probably built something awesome with it.</p>
-					</div>
-					<div class="skill-card">
-						<h3>🐛 Bug Hunter Extraordinaire</h3>
-						<p>I find bugs faster than you can say "it works on my machine." My debugging skills are legendary in the developer community.</p>
-					</div>
-					<div class="skill-card">
-						<h3>🚀 Performance Optimizer</h3>
-						<p>I make applications run faster than my hair grows back. Every millisecond counts, and I squeeze performance out of every line of code.</p>
-					</div>
-					<div class="skill-card">
-						<h3>🎨 UI/UX Enthusiast</h3>
-						<p>Creating interfaces that are as smooth and intuitive as my head. User experience is everything, and I make sure every interaction feels natural.</p>
-					</div>
-					<div class="skill-card">
-						<h3>☁️ Cloud Architect</h3>
-						<p>Building scalable solutions in the cloud that are as reliable as my commitment to staying bald. AWS, Azure, GCP - I've got you covered.</p>
-					</div>
-					<div class="skill-card">
-						<h3>🤝 Team Player</h3>
-						<p>Collaborating with teams to create amazing products. I bring the same energy to code reviews as I do to explaining why I'm bald by choice.</p>
-					</div>
-				</div>
-			</section>
-
-			<section class="section">
-				<h2>📈 MY JOURNEY</h2>
-				<div class="timeline">
-					<div class="timeline-item">
-						<div class="timeline-content">
-							<h3>🎓 The Beginning</h3>
-							<div class="date">2015 - 2018</div>
-							<p>Started my journey in computer science, learning the fundamentals while my hair was still trying to decide if it wanted to stay or go.</p>
-						</div>
-					</div>
-					<div class="timeline-item">
-						<div class="timeline-content">
-							<h3>💼 First Developer Role</h3>
-							<div class="date">2018 - 2020</div>
-							<p>Landed my first job as a junior developer. This is when I realized that being bald actually made me look more professional and intimidating in code reviews.</p>
-						</div>
-					</div>
-					<div class="timeline-item">
-						<div class="timeline-content">
-							<h3>🚀 Senior Developer</h3>
-							<div class="date">2020 - 2022</div>
-							<p>Promoted to senior developer. My baldness was now a symbol of experience and wisdom in the tech world.</p>
-						</div>
-					</div>
-					<div class="timeline-item">
-						<div class="timeline-content">
-							<h3>🌟 Bald Software Guy</h3>
-							<div class="date">2022 - Present</div>
-							<p>Fully embraced my identity as the Bald Software Guy. Now I'm not just a developer - I'm a legend in the making.</p>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<section class="section">
-				<h2>🎯 MY PHILOSOPHY</h2>
-				<p>
-					<strong>"Code is like humor. When you have to explain it, it's bad."</strong> - This is my mantra. I believe in writing code that's so clean and well-documented that even a junior developer with a full head of hair can understand it.
-				</p>
-				<p>
-					I'm passionate about creating software that not only works flawlessly but also brings joy to the people who use it. Whether it's a simple utility or a complex enterprise application, I approach every project with the same level of enthusiasm and attention to detail.
-				</p>
-				<p>
-					And yes, I'm bald by choice. It's aerodynamic, it's professional, and most importantly, it's me. Just like my code, I keep it clean, simple, and efficient.
-				</p>
-			</section>
-		</main>
 
 		<Footer />
 
 		<script>
-			// INTENSE PARTICLE SYSTEM
+			// SUPER GAY DICK CONFETTI SYSTEM
+			function createDickConfetti() {
+				const container = document.getElementById('dickConfetti');
+				const dicks = ['🍆', '🥕', '🌽', '🥖', '🍌', '🥒'];
+				
+				for (let i = 0; i < 50; i++) {
+					const dick = document.createElement('div');
+					dick.className = 'dick-confetti';
+					dick.textContent = dicks[Math.floor(Math.random() * dicks.length)];
+					dick.style.left = Math.random() * 100 + '%';
+					dick.style.animationDelay = Math.random() * 8 + 's';
+					dick.style.animationDuration = (5 + Math.random() * 5) + 's';
+					dick.style.fontSize = (1 + Math.random() * 1.5) + 'rem';
+					container.appendChild(dick);
+				}
+			}
+
+			// RAINBOW PARTICLE SYSTEM
 			function createParticles() {
 				const container = document.getElementById('particles');
-				for (let i = 0; i < 80; i++) {
+				for (let i = 0; i < 100; i++) {
 					const particle = document.createElement('div');
 					particle.className = 'particle';
 					particle.style.left = Math.random() * 100 + '%';
-					particle.style.animationDelay = Math.random() * 10 + 's';
-					particle.style.animationDuration = (8 + Math.random() * 4) + 's';
+					particle.style.animationDelay = Math.random() * 8 + 's';
+					particle.style.animationDuration = (6 + Math.random() * 4) + 's';
 					container.appendChild(particle);
 				}
 			}
 
 			// Initialize effects when page loads
 			document.addEventListener('DOMContentLoaded', function() {
+				createDickConfetti();
 				createParticles();
 				
-				// Add interactive effects to skill cards
-				const skillCards = document.querySelectorAll('.skill-card');
-				skillCards.forEach(card => {
+				// Add interactive effects
+				const cards = document.querySelectorAll('.about-card, .skill-card, .timeline-content');
+				cards.forEach(card => {
 					card.addEventListener('mouseenter', function() {
 						this.style.animation = 'none';
 						setTimeout(() => {
-							this.style.animation = 'cardFloat 6s ease-in-out infinite';
+							this.style.animation = '';
 						}, 10);
 					});
 				});
 
 				// Add click effects to title
-				const title = document.querySelector('.hero-title');
+				const title = document.querySelector('.about-title');
 				title.addEventListener('click', function() {
-					this.style.animation = 'titleFloat 0.3s ease-in-out';
+					this.style.animation = 'titleFloat 0.5s ease-in-out';
 					setTimeout(() => {
-						this.style.animation = 'neonGlow 2s ease-in-out infinite, titleFloat 5s ease-in-out infinite';
-					}, 300);
+						this.style.animation = 'neonGlow 2s ease-in-out infinite, titleFloat 4s ease-in-out infinite';
+					}, 500);
 				});
 			});
 		</script>
