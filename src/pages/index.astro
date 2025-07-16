@@ -37,6 +37,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				font-family: 'Space Mono', monospace;
 				margin: 0;
 				overflow-x: hidden;
+				cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text x='0' y='24' font-size='24'>🧑‍🦲</text></svg>") 16 16, auto;
 			}
 
 			/* === DICK CONFETTI 2.0 === */
@@ -602,6 +603,12 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					font-size: 1rem;
 				}
 			}
+			/* --- SITE GAME (bugs & HUD) --- */
+			#bald-hud{
+				position:fixed;bottom:10px;left:10px;padding:6px 12px;background:rgba(0,0,0,0.6);color:white;font-family:'Space Mono',monospace;border:2px solid var(--rainbow-pink);border-radius:8px;font-size:14px;z-index:1200;pointer-events:none;}
+			.site-bug{position:fixed;font-size:24px;user-select:none;cursor:pointer;transition:transform 0.2s;z-index:1100;}
+			.site-bug:hover{transform:scale(1.3);} 
+			.bald-cursor{position:fixed;left:0;top:0;transform:translate(-50%,-50%);font-size:26px;z-index:1500;pointer-events:none;}
 		</style>
 	</head>
 	<body>
@@ -651,8 +658,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					<div class="tech-item">AWS</div>
 				</div>
 				
-				<button class="cta-button" onclick="startBaldGame()">Play BALD GAME</button>
-				<canvas id="baldGameCanvas" width="600" height="400" style="display:none;margin-top:2rem;border:3px solid var(--rainbow-pink);border-radius:12px;box-shadow:0 0 20px var(--rainbow-pink);"></canvas>
+				<button class="cta-button" onclick="scrollToAbout()">Explore My Code</button>
 			</div>
 		</section>
 
@@ -750,6 +756,9 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					setTimeout(()=>p.remove(),1600);
 				}
 			}
+
+			// expose for global game
+			window.spawnConfetti = (x,y) => explodeAt(document.getElementById('dickConfetti'), ['🍆','🥕','🌽','🥖','🍌','🥒'], x, y);
 			
 			function getRandomRainbowColor() {
 				const colors = [
@@ -810,6 +819,9 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				startDickConfetti();
 				createParticles();
 				createMatrixRain();
+
+				initSiteBugGame();
+				initSiteCursor();
 				
 				// Add some interactive effects
 				const techItems = document.querySelectorAll('.tech-item');
@@ -832,99 +844,117 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				});
 			});
 
-			/* === BALD MINI GAME === */
-			let baldGameRunning=false;
-			let spawnTimer;
-			let moveListener;
+			/* === SITE BUG GAME === */
+			function initSiteBugGame(){
+				const hud=document.createElement('div');
+				hud.id='bald-hud';
+				hud.textContent='Score: 0 | Lives: 3';
+				document.body.appendChild(hud);
 
-			window.startBaldGame = function(){
-				if(baldGameRunning){return;}
-				baldGameRunning=true;
-				const canvas=document.getElementById('baldGameCanvas');
-				if(!canvas){console.error('Canvas element not found');return;}
-				const ctx=canvas.getContext('2d');
-				canvas.style.display='block';
-
-				const hero='🧑‍🦲';
-				const bug='🐛';
-				let heroX=canvas.width/2;
-				const heroY=canvas.height-60;
-				const heroSize=40;
-				let score=0;
-				let lives=3;
+				let score=0,lives=3;
 				const bugs=[];
-				let gameOver=false;
+				let cursorX=0,cursorY=0;
 
-                // remove old movement listener if exists
-                if(moveListener){document.removeEventListener('keydown',moveListener);}
-                moveListener=function(e){
-                    if(e.key==='ArrowLeft') heroX-=20;
-                    if(e.key==='ArrowRight') heroX+=20;
-                    if(e.key==='a') heroX-=20; // WASD support
-                    if(e.key==='d') heroX+=20;
-                    heroX=Math.max(0,Math.min(canvas.width-heroSize,heroX));
-                };
-                document.addEventListener('keydown',moveListener);
-
-				function spawnBug(){
-					bugs.push({x:Math.random()*(canvas.width-30),y:-30,speed:2+Math.random()*3});
+				function spawnBugEl(){
+					const bug=document.createElement('div');
+					bug.className='site-bug';
+					bug.style.position='fixed';
+					bug.textContent='🐛';
+					const startX=Math.random()*window.innerWidth;
+					bug.style.left=startX+'px';
+					bug.style.top='-30px';
+					bug.dataset.speed=(1+Math.random()*2).toString();
+					document.body.appendChild(bug);
+					bugs.push(bug);
+					bug.addEventListener('click',()=>{
+						const rect=bug.getBoundingClientRect();
+						window.spawnConfetti(rect.left,rect.top);
+						score+=5;hud.textContent=`Score: ${score} | Lives: ${lives}`;
+						bug.remove();
+					});
 				}
-				spawnTimer=setInterval(spawnBug,800);
-
-				function draw(){
-					ctx.clearRect(0,0,canvas.width,canvas.height);
-					ctx.font='32px serif';
-					// draw hero
-					ctx.textBaseline='top';
-					ctx.fillText(hero,heroX,heroY);
-					// draw bugs
-					bugs.forEach(b=>{ctx.fillText(bug,b.x,b.y);});
-					// HUD
-					ctx.fillStyle='white';
-					ctx.font='16px monospace';
-					ctx.fillText('Score:'+score,10,20);
-					ctx.fillText('Lives:'+lives,10,40);
-				}
+				spawnBugEl();
+				setInterval(spawnBugEl,2000);
 
 				function update(){
-					bugs.forEach(b=>{b.y+=b.speed;});
-					// collision & off-screen
 					for(let i=bugs.length-1;i>=0;i--){
 						const b=bugs[i];
-						if(b.y>canvas.height){bugs.splice(i,1);lives--;if(lives<=0)gameOver=true;continue;}
-						if(Math.abs(b.x-heroX)<30 && Math.abs(b.y-heroY)<30){
-							bugs.splice(i,1);
-							score+=5;
+						const y=parseFloat(b.style.top)+parseFloat(b.dataset.speed||'1');
+						b.style.top=y+'px';
+						// collision with cursor
+						const dist=Math.hypot((b.offsetLeft+12)-cursorX,(b.offsetTop+12)-cursorY);
+						if(dist<24){
+							window.spawnConfetti(b.offsetLeft,b.offsetTop);
+							score+=5;hud.textContent=`Score: ${score} | Lives: ${lives}`;
+							b.remove();bugs.splice(i,1);
+							continue;
+						}
+
+						if(y>window.innerHeight){
+							b.remove();bugs.splice(i,1);
+							lives--;hud.textContent=`Score: ${score} | Lives: ${lives}`;
+							showWarning();
+							if(lives<=0){
+								systemCrash();
+								lives=3;score=0;hud.textContent=`Score: ${score} | Lives: ${lives}`;
+							}
 						}
 					}
+					requestAnimationFrame(update);
+				}
+				update();
+
+				function showWarning(){
+					let bar=document.getElementById('bug-warning');
+					if(bar)return;
+					bar=document.createElement('div');
+					bar.id='bug-warning';
+					bar.textContent='⚠️  Bugs escaped! Click to debug.';
+					Object.assign(bar.style,{position:'fixed',top:'0',left:'0',right:'0',padding:'8px',background:'var(--rainbow-red)',color:'#fff',textAlign:'center',fontFamily:"Space Mono, monospace",zIndex:1300,cursor:'pointer'});
+					document.body.appendChild(bar);
+					bar.onclick=()=>bar.remove();
 				}
 
-				function loop(){
-					if(gameOver){
-						ctx.clearRect(0,0,canvas.width,canvas.height);
-						ctx.fillStyle='white';
-						ctx.font='28px monospace';
-						ctx.fillText('Game Over – Score '+score,100,200);
-						baldGameRunning=false;
-						clearInterval(spawnTimer);
-						ctx.fillStyle='var(--rainbow-pink)';
-						ctx.font='18px monospace';
-						ctx.fillText('Press  SPACE  or  R  or click canvas to play again',60,240);
-						canvas.addEventListener('click',restartHandler,{once:true});
-						document.addEventListener('keydown',restartHandler,{once:true});
-						}
-						update();
-						draw();
-						requestAnimationFrame(loop);
+				function systemCrash(){
+					const cover=document.createElement('div');
+					Object.assign(cover.style,{position:'fixed',inset:'0',background:'#000',color:'#fff',display:'flex',alignItems:'center',justifyContent:'center',fontFamily:"Orbitron, monospace",fontSize:'2rem',zIndex:1400});
+					cover.textContent='SYSTEM OVERRUN – Refresh to reboot';
+					document.body.appendChild(cover);
 				}
-				loop();
-				function restartHandler(e){
-                    if(!e || e.code==='Space' || e.key==='r' || e.key==='R' || e.type==='click'){
-                        canvas.removeEventListener('click',restartHandler);
-                        baldGameRunning=false; // allow restart via button or handler
-                        window.startBaldGame();
-                    }
-                }
+			}
+
+			/* cursor */
+			function initSiteCursor(){
+				// system cursor already replaced by emoji cursor via CSS
+				const c=document.createElement('div');
+				c.className='bald-cursor';
+				c.textContent='🧑‍🦲';
+				document.body.appendChild(c);
+				// start at center
+				cursorX=window.innerWidth/2;cursorY=window.innerHeight/2;
+				c.style.left=cursorX+'px';
+				c.style.top=cursorY+'px';
+
+				const moveCursor=(dx,dy)=>{
+					cursorX=Math.max(0,Math.min(window.innerWidth-24,cursorX+dx));
+					cursorY=Math.max(0,Math.min(window.innerHeight-24,cursorY+dy));
+					c.style.left=cursorX+'px';
+					c.style.top=cursorY+'px';
+				};
+
+				document.addEventListener('mousemove',e=>{
+					cursorX=e.clientX;cursorY=e.clientY;
+					c.style.left=cursorX+'px';
+					c.style.top=cursorY+'px';
+				});
+
+				document.addEventListener('keydown',e=>{
+					const step=30;
+					if(['ArrowLeft','a','A'].includes(e.key)){moveCursor(-step,0);e.preventDefault();}
+					if(['ArrowRight','d','D'].includes(e.key)){moveCursor(step,0);e.preventDefault();}
+					if(['ArrowUp','w','W'].includes(e.key)){moveCursor(0,-step);e.preventDefault();}
+					if(['ArrowDown','s','S'].includes(e.key)){moveCursor(0,step);e.preventDefault();}
+				});
 			}
 			</script>
 	</body>
