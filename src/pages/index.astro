@@ -39,7 +39,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				overflow-x: hidden;
 			}
 
-			/* SUPER GAY DICK CONFETTI FIREWORKS */
+			/* === DICK CONFETTI 2.0 === */
 			.dick-confetti-container {
 				position: fixed;
 				top: 0;
@@ -51,12 +51,13 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				overflow: hidden;
 			}
 
-			.dick-firework {
+			.dick-rocket {
 				position: absolute;
-				width: 10px;
-				height: 10px;
+				width: 14px;
+				height: 14px;
 				border-radius: 50%;
-				animation: dickFireworkLaunch 3s ease-out forwards;
+				filter: drop-shadow(0 0 6px currentColor);
+				animation: rocketMove 1s ease-out forwards;
 			}
 
 			.dick-firework::before {
@@ -78,9 +79,8 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 			.dick-particle {
 				position: absolute;
-				font-size: 1.2rem;
-				animation: dickParticleFly 1.5s ease-out forwards;
-				opacity: 0;
+				font-size: 1.3rem;
+				animation: particleMove 1.6s ease-out forwards;
 			}
 
 			.dick-particle:nth-child(odd) { color: var(--rainbow-pink); }
@@ -555,10 +555,11 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				100% { background: linear-gradient(360deg, var(--rainbow-red), var(--rainbow-orange), var(--rainbow-yellow), var(--rainbow-green), var(--rainbow-blue), var(--rainbow-purple)); }
 			}
 
-			@keyframes dickFireworkLaunch {
-				0% { transform: translateY(0) translateX(0) scale(0.1); opacity: 0; }
-				50% { opacity: 1; }
-				100% { transform: translateY(-100vh) translateX(calc(var(--launch-x) * 100%)) scale(1); opacity: 0; }
+			/* New horizontal firework */
+			@keyframes rocketMove {
+				0%   { transform: translateX(0) translateY(0) scale(0.5); opacity:0; }
+				20%  { opacity:1; }
+				100% { transform: translateX(calc(var(--end-x) * 1vw)) translateY(calc(var(--end-y) * 1vh)) scale(1.1); opacity:0; }
 			}
 
 			@keyframes fireworkGlow {
@@ -567,14 +568,13 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 			}
 
 			@keyframes dickExplosion {
-				0% { transform: scale(1); opacity: 1; }
-				100% { transform: scale(1.5); opacity: 0; }
+				0%   { transform: scale(0.6); opacity:1; }
+				100% { transform: scale(1.6); opacity:0; }
 			}
 
-			@keyframes dickParticleFly {
-				0% { transform: translateY(0) translateX(0) scale(0.5); opacity: 0; }
-				50% { opacity: 1; }
-				100% { transform: translateY(-100px) translateX(calc(var(--particle-x) * 100%)) scale(1); opacity: 0; }
+			@keyframes particleMove {
+				0%   { transform: translate(0,0) scale(0.4); opacity:1; }
+				100% { transform: translate(calc(var(--dx) * 1px), calc(var(--dy) * 1px)) scale(1); opacity:0; }
 			}
 
 			@keyframes fireworkTrail {
@@ -685,93 +685,69 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		<Footer />
 
 		<script>
-			// EPIC DICK FIREWORKS SYSTEM
-			function createDickFireworks() {
+			// DICK CONFETTI 2.0 SYSTEM
+			function startDickConfetti() {
 				const container = document.getElementById('dickConfetti');
 				const dicks = ['🍆', '🥕', '🌽', '🥖', '🍌', '🥒'];
-				
-				// Launch fireworks from sides
-				setInterval(() => {
-					launchDickFirework(container, dicks);
-				}, 2000);
-				
-				// Launch initial fireworks
-				for (let i = 0; i < 5; i++) {
-					setTimeout(() => {
-						launchDickFirework(container, dicks);
-					}, i * 500);
-				}
+
+				const burst = () => launchDickBurst(container, dicks);
+				burst();
+				setInterval(burst, 2300);
 			}
-			
-			function launchDickFirework(container, dicks) {
-				// Create firework rocket
-				const firework = document.createElement('div');
-				firework.className = 'dick-firework';
-				
-				// Random launch position from sides
-				const isFromLeft = Math.random() > 0.5;
-				const launchX = isFromLeft ? -0.1 : 1.1;
-				const targetX = Math.random() * 0.8 + 0.1; // Target in middle area
-				const targetY = Math.random() * 0.6 + 0.2; // Target in upper area
-				
-				firework.style.left = (launchX * 100) + '%';
-				firework.style.bottom = '0%';
-				firework.style.setProperty('--launch-x', (targetX - launchX).toString());
-				firework.style.color = getRandomRainbowColor();
-				
-				container.appendChild(firework);
-				
-				// Explode after launch animation
+
+			function launchDickBurst(container, dicks) {
+				const rocket = document.createElement('div');
+				rocket.className = 'dick-rocket';
+
+				const fromLeft = Math.random() > 0.5;
+				const startX = fromLeft ? -5 : 105; // vw
+				const endX = fromLeft ? 50 + Math.random()*20 : - (50 + Math.random()*20); // travel 50-70vw
+				const startY = 10 + Math.random()*80; // vh
+				const endY = (Math.random()*60) - 30; // -30 to +30 vh offset
+
+				rocket.style.left = startX + 'vw';
+				rocket.style.top  = startY + 'vh';
+				rocket.style.setProperty('--end-x', endX);
+				rocket.style.setProperty('--end-y', endY);
+				rocket.style.background = getRandomRainbowColor();
+
+				container.appendChild(rocket);
+
 				setTimeout(() => {
-					explodeDickFirework(container, dicks, targetX * window.innerWidth, (1 - targetY) * window.innerHeight);
-					firework.remove();
-				}, 3000);
+					explodeAt(container, dicks, (startX + endX) * window.innerWidth/100, (startY + endY) * window.innerHeight/100);
+					rocket.remove();
+				}, 1000);
 			}
-			
-			function explodeDickFirework(container, dicks, x, y) {
-				// Create explosion effect
-				const explosion = document.createElement('div');
-				explosion.className = 'dick-explosion';
-				explosion.style.left = x + 'px';
-				explosion.style.top = y + 'px';
-				explosion.style.width = '100px';
-				explosion.style.height = '100px';
-				explosion.style.background = 'radial-gradient(circle, rgba(255,255,255,0.8) 0%, transparent 70%)';
-				explosion.style.borderRadius = '50%';
-				
-				container.appendChild(explosion);
-				
-				// Create dick particles
-				const particleCount = 15 + Math.floor(Math.random() * 10);
-				for (let i = 0; i < particleCount; i++) {
-					const particle = document.createElement('div');
-					particle.className = 'dick-particle';
-					particle.textContent = dicks[Math.floor(Math.random() * dicks.length)];
-					particle.style.left = x + 'px';
-					particle.style.top = y + 'px';
-					
-					// Random direction for each particle
-					const angle = (i / particleCount) * 2 * Math.PI;
-					const distance = 100 + Math.random() * 150;
-					const particleX = Math.cos(angle) * distance;
-					const particleY = Math.sin(angle) * distance;
-					
-					particle.style.setProperty('--particle-x', (particleX / window.innerWidth).toString());
-					particle.style.setProperty('--particle-y', (particleY / window.innerHeight).toString());
-					particle.style.animationDelay = (Math.random() * 0.5) + 's';
-					
-					container.appendChild(particle);
-					
-					// Remove particle after animation
-					setTimeout(() => {
-						particle.remove();
-					}, 2000);
+
+			function explodeAt(container, dicks, x, y) {
+				const flash = document.createElement('div');
+				flash.className = 'dick-explosion';
+				flash.style.left = x + 'px';
+				flash.style.top  = y + 'px';
+				flash.style.width = '140px';
+				flash.style.height= '140px';
+				flash.style.position = 'absolute';
+				flash.style.borderRadius = '50%';
+				flash.style.background = 'radial-gradient(circle, rgba(255,255,255,0.9) 0%, transparent 70%)';
+				flash.style.animation = 'dickExplosion 0.7s ease-out forwards';
+				container.appendChild(flash);
+				setTimeout(()=>flash.remove(), 700);
+
+				const count = 30 + Math.floor(Math.random()*15);
+				for(let i=0;i<count;i++){
+					const p = document.createElement('div');
+					p.className = 'dick-particle';
+					p.textContent = dicks[Math.floor(Math.random()*dicks.length)];
+					p.style.left = x + 'px';
+					p.style.top  = y + 'px';
+					const ang = Math.random()*Math.PI*2;
+					const dist = 100 + Math.random()*150;
+					p.style.setProperty('--dx', Math.cos(ang)*dist);
+					p.style.setProperty('--dy', Math.sin(ang)*dist);
+					p.style.color = getRandomRainbowColor();
+					container.appendChild(p);
+					setTimeout(()=>p.remove(),1600);
 				}
-				
-				// Remove explosion after animation
-				setTimeout(() => {
-					explosion.remove();
-				}, 2000);
 			}
 			
 			function getRandomRainbowColor() {
@@ -830,7 +806,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 			// Initialize effects when page loads
 			document.addEventListener('DOMContentLoaded', function() {
-				createDickFireworks();
+				startDickConfetti();
 				createParticles();
 				createMatrixRain();
 				
