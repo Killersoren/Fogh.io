@@ -205,10 +205,13 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				-webkit-text-fill-color: transparent;
 				background-clip: text;
 				animation: neonGlow 2s ease-in-out infinite, titleFloat 4s ease-in-out infinite;
-				text-shadow: 
-					0 0 20px var(--rainbow-pink),
-					0 0 40px var(--rainbow-pink),
-					0 0 60px var(--rainbow-pink);
+				/* 3D stacked shadow */
+				text-shadow:
+					1px 1px 0 #ff00ff,
+					2px 2px 0 #cc00ff,
+					3px 3px 0 #9900ff,
+					4px 4px 0 #6600ff,
+					5px 5px 10px rgba(0,0,0,0.7);
 			}
 
 			.about-subtitle {
@@ -237,6 +240,12 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				animation: cardFloat 5s ease-in-out infinite;
 				transition: all 0.3s ease;
 				text-align: center;
+				/* 3D effect */
+				box-shadow:
+					0 4px 0 var(--rainbow-pink),
+					0 8px 0 var(--rainbow-blue),
+					0 12px 15px rgba(0,0,0,0.6);
+				transform: perspective(800px) rotateX(2deg) rotateY(-2deg);
 			}
 
 			.about-card::before {

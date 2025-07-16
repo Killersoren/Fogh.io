@@ -126,7 +126,12 @@ const { title } = Astro.props;
 		-webkit-text-fill-color: transparent;
 		background-clip: text;
 		animation: neonGlow 2s ease-in-out infinite;
-		text-shadow: 0 0 15px var(--rainbow-pink);
+		/* 2000s retro 3D shadow */
+		text-shadow:
+            1px 1px 0 var(--rainbow-pink),
+            2px 2px 0 var(--rainbow-blue),
+            3px 3px 0 var(--rainbow-purple),
+            4px 4px 5px rgba(0,0,0,0.75);
 	}
 
 	.logo-emoji {
